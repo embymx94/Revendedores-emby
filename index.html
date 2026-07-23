@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emby para Revendedores</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0b0e14;
+            color: #e8edf5;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #f7c948, #f0a030);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            color: #a0b3cc;
+            margin-top: 0.3rem;
+        }
+
+        .section {
+            background: #141a24;
+            border-radius: 28px;
+            padding: 2rem 2rem 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2a3342;
+            transition: border-color 0.2s;
+        }
+
+        .section:hover {
+            border-color: #f7c94855;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #f7c948;
+        }
+
+        .section-title span {
+            background: #f7c94820;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #f7c948;
+            border: 1px solid #f7c94840;
+        }
+
+        .img-wrapper {
+            background: #0f141e;
+            border-radius: 18px;
+            overflow: hidden;
+            margin: 1.2rem 0 1.5rem;
+            border: 1px solid #2a3342;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .img-wrapper:hover {
+            transform: scale(1.005);
+            border-color: #f7c94880;
+        }
+
+        .img-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            pointer-events: none;
+        }
+
+        .explanation {
+            background: #0f141e;
+            border-left: 4px solid #f7c948;
+            padding: 1.5rem 1.8rem;
+            border-radius: 14px;
+            margin-top: 1.2rem;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #d0dcec;
+        }
+
+        .explanation strong {
+            color: #f7c948;
+        }
+
+        .highlight-box {
+            background: #1e2635;
+            padding: 1rem 1.8rem;
+            border-radius: 40px;
+            display: inline-block;
+            font-weight: 500;
+            margin-top: 0.8rem;
+            border: 1px solid #f7c94830;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+            margin: 1.8rem 0 1rem;
+        }
+
+        .price-card {
+            background: #10161f;
+            border-radius: 18px;
+            padding: 1.2rem 1rem;
+            text-align: center;
+            border: 1px solid #2a3342;
+            transition: all 0.15s;
+        }
+
+        .price-card:hover {
+            border-color: #f7c94880;
+            background: #151e2b;
+        }
+
+        .price-card .plan {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #92a5c2;
+        }
+
+        .price-card .credits {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #f7c948;
+        }
+
+        .price-card .detail {
+            font-size: 0.95rem;
+            color: #bcc9dd;
+            margin: 0.3rem 0;
+        }
+
+        .price-card .price {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .badge-tv {
+            background: #f7c94820;
+            color: #f7c948;
+            border-radius: 40px;
+            padding: 0.2rem 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-top: 0.2rem;
+            border: 1px solid #f7c94840;
+        }
+
+        .badge-basic {
+            background: #3a4a6630;
+            color: #b0c8e5;
+            border-radius: 40px;
+            padding: 0.2rem 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-top: 0.2rem;
+            border: 1px solid #3a4a6660;
+        }
+
+        .footer-note {
+            margin-top: 2.5rem;
+            text-align: center;
+            color: #6f84a3;
+            border-top: 1px solid #1e2635;
+            padding-top: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-note a {
+            color: #f7c948;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-note a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-whatsapp {
+            display: inline-block;
+            background: #25D366;
+            color: #fff;
+            font-weight: 600;
+            padding: 0.7rem 1.8rem;
+            border-radius: 60px;
+            text-decoration: none;
+            margin-top: 0.8rem;
+            border: none;
+            font-size: 1rem;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            cursor: pointer;
+        }
+
+        .btn-whatsapp:hover {
+            background: #1ebe5c;
+            transform: scale(1.02);
+        }
+
+        .btn-whatsapp:active {
+            transform: scale(0.97);
+        }
+
+        .boton-wrapper {
+            margin: 1rem 0 0.2rem;
+        }
+
+        /* ===== MODAL PARA IMAGEN GRANDE ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+            border: 1px solid #f7c94840;
+            overflow: hidden;
+            background: #0f141e;
+            position: relative;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 85vh;
+            display: block;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            font-size: 2.8rem;
+            font-weight: 300;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ===== AVISO DE UN SOLO DISPOSITIVO ===== */
+        .aviso-dispositivo {
+            background: #1e1a2a;
+            border-left: 4px solid #f7c948;
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            margin-top: 1.2rem;
+            font-size: 0.95rem;
+            color: #d0dcec;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .aviso-dispositivo .icono {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .aviso-dispositivo strong {
+            color: #f7c948;
+        }
+
+        .aviso-dispositivo .texto {
+            line-height: 1.5;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .section {
+                padding: 1.5rem;
+            }
+            .section-title {
+                font-size: 1.4rem;
+                flex-wrap: wrap;
+            }
+            .price-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .btn-whatsapp {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .modal-close {
+                width: 40px;
+                height: 40px;
+                font-size: 2rem;
+                top: 8px;
+                right: 12px;
+            }
+            .aviso-dispositivo {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ENCABEZADO -->
+        <div class="header">
+            <h1>🎬 Emby · Revendedores</h1>
+            <p>Planes y costos para que empieces tu negocio</p>
+        </div>
+
+        <!-- ========== SECCIÓN 1: COSTOS (con imagen) ========== -->
+        <div class="section">
+            <div class="section-title">
+                📊 Costos para revendedores
+                <span>base</span>
+            </div>
+
+            <!-- IMAGEN 1: costos.jpg (click para agrandar) -->
+            <div class="img-wrapper" onclick="abrirModal('https://i.postimg.cc/C5hx0kC8/costos.jpg')">
+                <img src="https://i.postimg.cc/C5hx0kC8/costos.jpg" alt="Tabla de costos para revendedores Emby" />
+            </div>
+
+            <div class="explanation">
+                <p>🔹 <strong>Esta es nuestra tabla de costos fijos</strong> para revendedores.
+                    Los precios son por <strong>crédito (1 dispositivo)</strong> y varían según el plan y la cantidad de créditos que compres.</p>
+                <ul style="margin: 0.8rem 0 0.5rem 1.5rem; color: #c8d6ea;">
+                    <li><strong>Plan Básico Cine</strong> → Películas + Series (sin TV en vivo).</li>
+                    <li><strong>Plan TV Total</strong> → Películas + Series + Canales en vivo.</li>
+                </ul>
+                <p style="margin-top: 0.6rem;">📌 <strong>Ejemplo:</strong> 5 créditos del plan básico cuestan <strong>$200</strong>; 5 créditos TV total son <strong>$400</strong>.</p>
+                <div class="highlight-box">✔️ A mayor volumen, mejor precio por crédito.</div>
+            </div>
+        </div>
+
+        <!-- ========== SECCIÓN 2: PRECIOS PÚBLICO (sin costos) ========== -->
+        <div class="section">
+            <div class="section-title">
+                🏷️ Precios sugeridos al público
+                <span>revende con margen</span>
+            </div>
+
+            <!-- IMAGEN 2: sin-costos.jpg (click para agrandar) -->
+            <div class="img-wrapper" onclick="abrirModal('https://i.postimg.cc/NFsjtm8m/sin-costos.jpg')">
+                <img src="https://i.postimg.cc/NFsjtm8m/sin-costos.jpg" alt="Precios sugeridos para clientes finales" />
+            </div>
+
+            <div class="explanation">
+                <p>🔹 <strong>Esta imagen es la que puedes enviar a tus clientes</strong> con los precios que tú decidas.
+                    Aquí <strong>no aparecen nuestros costos internos</strong>, solo los precios de venta al público.</p>
+                <p style="margin-top: 0.4rem;">✏️ <strong>Tú defines tus propios precios</strong> y puedes modificar la imagen con tus tarifas finales.
+                    Recuerda que el margen es tuyo: <em>precio público − costo revendedor = tu ganancia</em>.</p>
+
+                <div class="boton-wrapper">
+                    <a href="https://wa.me/525567416073?text=hola%20SKIN%2C%20quiero%20que%20mi%20publicidad%20ahora%20tuviera%20estos%20costos.%0APlan%20basico%20%24%0APlan%20tv%20total%20%24"
+                    target="_blank"
+                    class="btn-whatsapp">
+                    💬 SOLICITAR IMAGEN CON TUS PRECIOS
+                </a>
+            </div>
+
+            <div class="highlight-box" style="background: #1e2a3a; border-color: #f7c94860; margin-top: 1.2rem;">
+                💡 <strong>Tip:</strong> Ofrece costos accesibles al público y atrae más clientes.
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== TABLA RESUMEN DE CRÉDITOS ========== -->
+    <div style="background: #10161f; border-radius: 28px; padding: 1.8rem 1.5rem; border: 1px solid #2a3342; margin-top: 0.5rem;">
+        <h3 style="color: #f7c948; font-weight: 500; letter-spacing: 0.5px; margin-bottom: 1.2rem; text-align: center;">📦 Paquetes de créditos · 1 dispositivo cada uno</h3>
+        <div class="price-grid">
+            <div class="price-card">
+                <div class="plan">Básico · Cine</div>
+                <div class="credits">1</div>
+                <div class="detail">Películas + Series</div>
+                <div class="price">$50</div>
+                <span class="badge-basic">1 crédito</span>
+            </div>
+            <div class="price-card">
+                <div class="plan">TV Total</div>
+                <div class="credits">1</div>
+                <div class="detail">Pelis + Series + Canales</div>
+                <div class="price">$100</div>
+                <span class="badge-tv">1 crédito TV</span>
+            </div>
+            <div class="price-card">
+                <div class="plan">Básico · Cine</div>
+                <div class="credits">5</div>
+                <div class="detail">Películas + Series</div>
+                <div class="price">$200</div>
+                <span class="badge-basic">5 créditos</span>
+            </div>
+            <div class="price-card">
+                <div class="plan">TV Total</div>
+                <div class="credits">5</div>
+                <div class="detail">Pelis + Series + Canales</div>
+                <div class="price">$400</div>
+                <span class="badge-tv">5 créditos TV</span>
+            </div>
+            <div class="price-card">
+                <div class="plan">Básico · Cine</div>
+                <div class="credits">10</div>
+                <div class="detail">Películas + Series</div>
+                <div class="price">$400</div>
+                <span class="badge-basic">10 créditos</span>
+            </div>
+            <div class="price-card">
+                <div class="plan">TV Total</div>
+                <div class="credits">10</div>
+                <div class="detail">Pelis + Series + Canales</div>
+                <div class="price">$800</div>
+                <span class="badge-tv">10 créditos TV</span>
+            </div>
+        </div>
+
+        <!-- ===== AVISO DE UN SOLO DISPOSITIVO ===== -->
+        <div class="aviso-dispositivo">
+            <span class="icono">📱</span>
+            <span class="texto">
+                <strong>Un solo dispositivo por crédito:</strong> Cada crédito es para <strong>una sola activación en un dispositivo</strong>.
+                No uses más de un dispositivo a la vez para evitar errores de reproducción y asegurar la mejor experiencia.
+            </span>
+        </div>
+
+        <p style="text-align: center; color: #7d93b5; font-size: 0.95rem; margin-top: 0.8rem;">
+            ⚡ Los créditos son para una sola activación en un dispositivo.
+        </p>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <div class="footer-note">
+        <p>
+            📩 ¿Necesitas modificar la imagen de precios públicos?
+            <a href="https://wa.me/525567416073?text=Hola%20SKIN%2C%20necesito%20modificar%20la%20imagen%20de%20precios%20p%C3%BAblicos%2C%20por%20favor." target="_blank">Solicita cambios aquí</a>
+            ·
+            <a href="https://wa.me/525567416073?text=Hola%20SKIN%2C%20quiero%20ser%20revendedor%20autorizado%20de%20Emby.%20Por%20favor%20env%C3%ADame%20informes." target="_blank">Quiero ser revendedor</a>
+        </p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #4f6587;">© 2026 · Emby Revendedores · Todos los derechos reservados</p>
+    </div>
+
+</div>
+
+<!-- ===== MODAL PARA IMAGEN GRANDE ===== -->
+<div class="modal-overlay" id="modalImagen" onclick="cerrarModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation();">
+        <button class="modal-close" onclick="cerrarModal()">&times;</button>
+        <img id="modalImg" src="" alt="Imagen ampliada" />
+    </div>
+</div>
+
+<script>
+    function abrirModal(src) {
+        const modal = document.getElementById('modalImagen');
+        const img = document.getElementById('modalImg');
+        img.src = src;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal(event) {
+        if (event && event.target && !event.target.closest('.modal-content') && event.target !== document.getElementById('modalImagen')) {
+            return;
+        }
+        const modal = document.getElementById('modalImagen');
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Cerrar con tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = document.getElementById('modalImagen');
+            if (modal.classList.contains('active')) {
+                cerrarModal();
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
